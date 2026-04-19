@@ -48,12 +48,17 @@ echo "[Info] Starting Windrose Server..."
 PARSED=$(echo "$STARTUP" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo "[Exec] ${PARSED}"
 
-eval "$PARSED"
+LOG_FILE="/home/container/R5/Saved/Logs/R5.log"
+
+xvfb-run --auto-servernum eval "$PARSED" >/dev/null 2>&1 &
+WINE_PID=$!
+
+tail -F "$LOG_FILE" 2>/dev/null &
+TAIL_PID=$!
+
+wait $WINE_PID
 EXIT_CODE=$?
 
-# Cleanup
-echo "[Info] Server process exited with code $EXIT_CODE. Cleaning up..."
+kill "$TAIL_PID" 2>/dev/null
 wineserver -k 2>/dev/null
-kill "$XVFB_PID" 2>/dev/null
-
 exit $EXIT_CODE
