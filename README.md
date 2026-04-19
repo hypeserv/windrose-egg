@@ -4,7 +4,7 @@ Run a Windrose dedicated server on HypeServ using a custom Docker image with Win
 
 ## Running on Pterodactyl or Pelican
 > [!WARNING]
-> This egg and the corresponding docker image are built for the custom Software we are running at HypeServ, most bits are probably compatible with Pterodactyl or Pelical, but we have not tested this functionality!
+> This egg and the corresponding docker image are built for the custom Software we are running at HypeServ, most bits are probably compatible with Pterodactyl or Pelican, but we have not tested this functionality!
 
 1. Import the egg file
 Download the egg-windrose.json file and import it into Pterodactyl or Pelican.
