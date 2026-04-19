@@ -3,7 +3,7 @@
 Run a Windrose dedicated server on HypeServ using a custom Docker image with Wine and Xvfb.
 
 ## Running on Pterodactyl or Pelican
-> [!IMPORTANT]
+> [!WARNING]
 > This egg and the corresponding docker image are built for the custom Software we are running at HypeServ, most bits are probably compatible with Pterodactyl or Pelical, but we have not tested this functionality!
 
 1. Import the egg file
