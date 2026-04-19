@@ -17,7 +17,19 @@
     "file_denylist": [],
     "startup": "wine R5/Binaries/Win64/WindroseServer-Win64-Shipping.exe -log -STDOUT",
     "config": {
-        "files": "{}",
+        "files": {
+            "R5/ServerDescription.json": {
+                "parser": "json",
+                "find": {
+                "ServerDescription_Persistent.P2pProxyAddress": "{{server.build.env.P2P_PROXY_ADDRESS}}",
+                "ServerDescription_Persistent.MaxPlayerCount": "{{server.build.env.MAX_PLAYERS}}",
+                "ServerDescription_Persistent.InviteCode": "{{server.build.env.INVITE_CODE}}",
+                "ServerDescription_Persistent.ServerName": "{{server.build.env.SERVER_NAME}}",
+                "ServerDescription_Persistent.Password": "{{server.build.env.SERVER_PASSWORD}}",
+                "ServerDescription_Persistent.IsPasswordProtected": "{{server.build.env.PASSWORD_PROTECTED}}"
+            }
+            }
+        },
         "startup": "{\"done\": \"LoggedIn\"}",
         "logs": "{}",
         "stop": "^C"

@@ -23,7 +23,7 @@ install_server() {
     echo " / __  / /_/ / /_/ /  __/__/ /  __/ /   | |/ / ";
     echo "/_/ /_/\\__, / .___/\\___/____/\\___/_/    |___/  ";
     echo "      /____/_/                                 ";
-    echo "Windrose Server Utils";
+    echo "Windrose Server Installer";
    LogAction "Installing / validating Windrose Dedicated Server (App 4129620)"
 
     local steam_login="anonymous"
