@@ -1,24 +1,25 @@
 {
-    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL",
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY HYPESERV PANEL - hypeserv.com",
     "meta": {
         "version": "HY_v1",
         "update_url": null
     },
-    "exported_at": "2026-04-19T12:00:00+00:00",
+    "exported_at": "2026-04-19T18:05:47+02:00",
     "name": "Windrose Dedicated Server",
     "author": "help@hypeserv.com",
     "description": "Windrose dedicated server running under Wine on Debian Bookworm.",
     "features": [
-        "pid_limit"
+        "pid_limit",
+        "invite_code.wr"
     ],
     "docker_images": {
-        "Windrose": "ghcr.io/hypeserv/windrose-egg:latest"
+        "Windrose": "ghcr.io\/hypeserv\/windrose-egg:latest"
     },
     "file_denylist": [],
-    "startup": "wine R5/Binaries/Win64/WindroseServer-Win64-Shipping.exe -log -STDOUT",
+    "startup": "wine R5\/Binaries\/Win64\/WindroseServer-Win64-Shipping.exe -log -STDOUT",
     "config": {
-        "files": "{\"R5/ServerDescription.json\":{\"parser\":\"json\",\"find\":{\"ServerDescription_Persistent.P2pProxyAddress\":\"{{server.build.env.P2P_PROXY_ADDRESS}}\",\"ServerDescription_Persistent.MaxPlayerCount\":\"{{server.build.env.MAX_PLAYERS}}\",\"ServerDescription_Persistent.InviteCode\":\"{{server.build.env.INVITE_CODE}}\",\"ServerDescription_Persistent.ServerName\":\"{{server.build.env.SERVER_NAME}}\",\"ServerDescription_Persistent.Password\":\"{{server.build.env.SERVER_PASSWORD}}\",\"ServerDescription_Persistent.IsPasswordProtected\":\"{{server.build.env.PASSWORD_PROTECTED}}\",\"ServerDescription_Persistent.DirectConnectionServerPort\":\"{{server.build.default.port}}\"}}}",
-        "startup": "{\"done\": \"LoggedIn\"}",
+        "files": "{\"R5\/ServerDescription.json\":{\"parser\":\"json\",\"find\":{\"ServerDescription_Persistent.P2pProxyAddress\":\"{{server.build.env.P2P_PROXY_ADDRESS}}\",\"ServerDescription_Persistent.MaxPlayerCount\":\"{{server.build.env.MAX_PLAYERS}}\",\"ServerDescription_Persistent.InviteCode\":\"{{server.build.env.INVITE_CODE}}\",\"ServerDescription_Persistent.ServerName\":\"{{server.build.env.SERVER_NAME}}\",\"ServerDescription_Persistent.Password\":\"{{server.build.env.SERVER_PASSWORD}}\",\"ServerDescription_Persistent.IsPasswordProtected\":\"{{server.build.env.PASSWORD_PROTECTED}}\",\"ServerDescription_Persistent.DirectConnectionServerPort\":\"{{server.build.default.port}}\"}}}",
+        "startup": "{\"done\": \"UEngine::LoadMap Load map complete\"}",
         "logs": "{}",
         "stop": "^C"
     },
@@ -34,91 +35,91 @@
             "name": "Update On Start",
             "description": "Download and validate server files on every startup. Set to false to skip.",
             "env_variable": "UPDATE_ON_START",
-            "default_value": true,
+            "default_value": "true",
+            "field_type": "text",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|boolean",
-            "field_type": "boolean"
+            "rules": "required|string|in:\"true\",\"false\""
         },
         {
             "name": "Invite Code",
             "description": "Invite code players use to join. Min 6 characters, 0-9 a-z A-Z, case sensitive.",
             "env_variable": "INVITE_CODE",
             "default_value": "",
+            "field_type": "text",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|string|min:6",
-            "field_type": "text"
+            "rules": "nullable|string|min:6"
         },
         {
             "name": "Server Name",
             "description": "Display name shown in the server browser.",
             "env_variable": "SERVER_NAME",
             "default_value": "HypeServ Windrose Server",
+            "field_type": "text",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:64",
-            "field_type": "text"
+            "rules": "required|string|max:64"
         },
         {
             "name": "Server Password",
             "description": "Leave empty for a public server.",
             "env_variable": "SERVER_PASSWORD",
             "default_value": "",
+            "field_type": "text",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|string",
-            "field_type": "text"
+            "rules": "nullable|string"
         },
         {
             "name": "Max Players",
             "description": "Maximum number of simultaneous players (2\u201310).",
             "env_variable": "MAX_PLAYERS",
             "default_value": "10",
+            "field_type": "text",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|integer|min:1|max:10",
-            "field_type": "number"
+            "rules": "required|integer|min:1|max:10"
         },
         {
             "name": "P2P Proxy Address",
             "description": "IP address the P2P proxy binds to. Use 127.0.0.1 for normal Docker networking; use the host LAN IP when players are on the same network.",
             "env_variable": "P2P_PROXY_ADDRESS",
             "default_value": "0.0.0.0",
+            "field_type": "text",
             "user_viewable": false,
             "user_editable": false,
-            "rules": "required|string",
-            "field_type": "text"
+            "rules": "required|string"
         },
         {
             "name": "Generate Settings",
             "description": "Set to false to skip config generation and use whatever is already in ServerDescription.json.",
             "env_variable": "GENERATE_SETTINGS",
-            "default_value": true,
+            "default_value": "true",
+            "field_type": "text",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|boolean",
-            "field_type": "boolean"
+            "rules": "required|string|in:\"true\",\"false\""
         },
         {
             "name": "Steam Username",
             "description": "Optional Steam username for DepotDownloader. Not required \u2014 Windrose is free-to-play.",
             "env_variable": "STEAM_USER",
             "default_value": "",
+            "field_type": "text",
             "user_viewable": false,
             "user_editable": false,
-            "rules": "nullable|string",
-            "field_type": "text"
+            "rules": "nullable|string"
         },
         {
             "name": "Steam Password",
             "description": "Optional Steam password for DepotDownloader.",
             "env_variable": "STEAM_PASS",
             "default_value": "",
+            "field_type": "text",
             "user_viewable": false,
             "user_editable": false,
-            "rules": "nullable|string",
-            "field_type": "text"
+            "rules": "nullable|string"
         }
     ]
 }
