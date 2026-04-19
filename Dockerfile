@@ -27,7 +27,7 @@ RUN dpkg --add-architecture i386 && \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -d /home/container -m -s /bin/bash container
-COPY --chmod=755 scripts/entrypoint.sh /home/container/entrypoint.sh
+COPY --chmod=755 scripts/entrypoint.sh /entrypoint.sh
 
 # Switch to container user
 USER container
@@ -39,4 +39,4 @@ STOPSIGNAL SIGINT
 
 # Use tini as init process to handle signals correctly
 ENTRYPOINT ["/usr/bin/tini", "-g", "--"]
-CMD ["/home/container/entrypoint.sh"]
+CMD ["/entrypoint.sh"]
