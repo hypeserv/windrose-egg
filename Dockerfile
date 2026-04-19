@@ -2,6 +2,7 @@ FROM --platform=linux/amd64 debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Install prerequisites, tini, and WineHQ Stable
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -12,40 +13,36 @@ RUN dpkg --add-architecture i386 && \
         lib32gcc-s1 \
         procps \
         xvfb \
-        xauth && \
-    curl -fsSL https://dl.winehq.org/wine-builds/winehq.key | \
-        gpg --dearmor -o /usr/share/keyrings/winehq-archive.key && \
-    echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/winehq-archive.key] https://dl.winehq.org/wine-builds/debian/ bookworm main" \
-        > /etc/apt/sources.list.d/winehq.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends winehq-stable && \
-    apt-get purge -y gnupg && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+        xauth \
+        tzdata \
+        tini \
+    && mkdir -pm755 /etc/apt/keyrings \
+    && curl -fsSL https://dl.winehq.org/wine-builds/winehq.key | gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key \
+    && echo "deb [arch=amd64,i386 signed-by=/etc/apt/keyrings/winehq-archive.key] https://dl.winehq.org/wine-builds/debian/ bookworm main" > /etc/apt/sources.list.d/winehq.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends winehq-stable \
+    && apt-get purge -y gnupg \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /steamcmd && \
-    curl -sL https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz | \
-    tar -C /steamcmd -zx && \
-    chmod +x /steamcmd/steamcmd.sh
+# Pterodactyl uses uid 1000 for the container user
+RUN useradd -d /home/container -m -s /bin/bash container
 
-RUN useradd -m -u 1000 -s /bin/bash container
+# Add the entrypoint to root so it isn't overwritten by the Pterodactyl volume mount
+COPY --chmod=755 entrypoint.sh /entrypoint.sh
 
-ENV WINEPREFIX=/home/container/.wine \
-    WINEARCH=win64 \
-    WINEDLLOVERRIDES="mscoree,mshtml=" \
-    DISPLAY=:99
+# Strip Windows line endings just in case
+RUN sed -i 's/\r$//' /entrypoint.sh
 
-RUN Xvfb :99 -screen 0 1024x768x16 & \
-    sleep 3 && \
-    su -l container -c "DISPLAY=:99 WINEPREFIX=/home/container/.wine WINEARCH=win64 WINEDLLOVERRIDES='mscoree,mshtml=' winecfg -v win10 >/dev/null 2>&1; wineboot --init >/dev/null 2>&1" && \
-    kill %1 2>/dev/null || true
-
-COPY scripts/ /home/container/scripts/
-RUN chmod +x /home/container/scripts/*.sh && \
-    chown -R container:container /home/container/
-
-WORKDIR /home/container
+# Switch to container user
 USER container
+ENV USER=container HOME=/home/container
+WORKDIR /home/container
 
-ENTRYPOINT ["/home/container/scripts/entrypoint.sh"]
+# Ensure clean shutdown
+STOPSIGNAL SIGINT
+
+# Use tini as init process to handle signals correctly
+ENTRYPOINT ["/usr/bin/tini", "-g", "--"]
+CMD ["/entrypoint.sh"]
