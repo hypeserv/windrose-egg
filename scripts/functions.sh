@@ -15,7 +15,7 @@ LogError()  { Log "$1" "$RedBoldText"; }
 LogSuccess(){ Log "$1" "$GreenBoldText"; }
 LogAction() { Log "$1" "$CyanBoldText" "==== " " ===="; }
 
-# Download / validate the Windrose server files via DepotDownloader.
+# Download / validate the Windrose server files via steamcmd.
 install_server() {
     echo "    __  __                _____                ";
     echo "   / / / /_  ______  ___ / ___/___  ______   __";
@@ -23,28 +23,33 @@ install_server() {
     echo " / __  / /_/ / /_/ /  __/__/ /  __/ /   | |/ / ";
     echo "/_/ /_/\\__, / .___/\\___/____/\\___/_/    |___/  ";
     echo "      /____/_/                                 ";
-    echo "Windrose Installer v0.0.5";
-        LogAction "Installing / validating Windrose Dedicated Server (App 4129620)"
+    echo "Windrose Server Utils";
+   LogAction "Installing / validating Windrose Dedicated Server (App 4129620)"
 
-    if [[ -n "${STEAM_USER:-}" ]]; then
-        /steamcmd/steamcmd.sh \
-            +force_install_dir /home/container \
-            +login "${STEAM_USER}" "${STEAM_PASS:-}" \
-            +app_update 4129620 validate \
-            +quit
-    else
-        /steamcmd/steamcmd.sh \
-            +force_install_dir /home/container \
-            +login anonymous \
-            +app_update 4129620 validate \
-            +quit
+    local steam_login="anonymous"
+    if [[ -n "${STEAM_USER:-}" && "${STEAM_USER}" != "null" ]]; then
+        steam_login="${STEAM_USER} ${STEAM_PASS:-}"
     fi
+
+    # Ensure SteamCMD is present in the volume
+    if [[ ! -f "/home/container/steamcmd/steamcmd.sh" ]]; then
+        LogWarn "SteamCMD missing in /home/container/steamcmd. Downloading..."
+        mkdir -p /home/container/steamcmd
+        curl -sSL -o /home/container/steamcmd/steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+        tar -xzvf /home/container/steamcmd/steamcmd.tar.gz -C /home/container/steamcmd
+        rm /home/container/steamcmd/steamcmd.tar.gz
+    fi
+
+    /home/container/steamcmd/steamcmd.sh \
+        +force_install_dir /home/container/server-files \
+        +login ${steam_login} \
+        +app_update 4129620 validate \
+        +quit
 
     LogSuccess "Server files ready"
 }
 
 # Graceful shutdown — sends SIGTERM to the Wine server process.
-# Returns 0 on clean exit, 1 if force-kill was needed.
 shutdown_server() {
     LogAction "Attempting graceful server shutdown"
     local pid
