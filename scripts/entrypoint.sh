@@ -3,7 +3,7 @@
 
 source /home/container/scripts/functions.sh
 
-SERVER_FILES="/home/container/server-files"
+SERVER_FILES="/home/container"
 SERVER_EXEC="$SERVER_FILES/R5/Binaries/Win64/WindroseServer-Win64-Shipping.exe"
 SERVER_DESC="$SERVER_FILES/R5/ServerDescription.json"
 

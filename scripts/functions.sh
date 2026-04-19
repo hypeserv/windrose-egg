@@ -24,21 +24,22 @@ install_server() {
     echo "/_/ /_/\\__, / .___/\\___/____/\\___/_/    |___/  ";
     echo "      /____/_/                                 ";
     echo "Windrose Installer v0.0.5";
-    LogAction "Installing / validating Windrose Dedicated Server (App 4129620)"
+        LogAction "Installing / validating Windrose Dedicated Server (App 4129620)"
 
-    local dd_args=(
-        -app 4129620
-        -dir /home/container/server-files
-        -validate
-    )
-
-    # Pass Steam credentials if provided (not required for free-to-play)
     if [[ -n "${STEAM_USER:-}" ]]; then
-        dd_args+=(-username "${STEAM_USER}")
-        [[ -n "${STEAM_PASS:-}" ]] && dd_args+=(-password "${STEAM_PASS}")
+        /steamcmd/steamcmd.sh \
+            +force_install_dir /home/container \
+            +login "${STEAM_USER}" "${STEAM_PASS:-}" \
+            +app_update 4129620 validate \
+            +quit
+    else
+        /steamcmd/steamcmd.sh \
+            +force_install_dir /home/container \
+            +login anonymous \
+            +app_update 4129620 validate \
+            +quit
     fi
 
-    /depotdownloader/DepotDownloader "${dd_args[@]}"
     LogSuccess "Server files ready"
 }
 
