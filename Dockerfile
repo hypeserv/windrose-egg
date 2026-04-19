@@ -26,14 +26,8 @@ RUN dpkg --add-architecture i386 && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Pterodactyl uses uid 1000 for the container user
 RUN useradd -d /home/container -m -s /bin/bash container
-
-# Add the entrypoint to root so it isn't overwritten by the Pterodactyl volume mount
-COPY --chmod=755 entrypoint.sh /entrypoint.sh
-
-# Strip Windows line endings just in case
-RUN sed -i 's/\r$//' /entrypoint.sh
+COPY --chmod=755 scripts/entrypoint.sh /home/container/entrypoint.sh
 
 # Switch to container user
 USER container
@@ -45,4 +39,4 @@ STOPSIGNAL SIGINT
 
 # Use tini as init process to handle signals correctly
 ENTRYPOINT ["/usr/bin/tini", "-g", "--"]
-CMD ["/entrypoint.sh"]
+CMD ["/home/container/entrypoint.sh"]
