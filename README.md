@@ -39,7 +39,7 @@ That's it! The Egg will use our custom docker image on runtime, and setup the se
 ## Notes
 
 - Windrose uses a Windows server binary, so we use Wine in this image.
-- Server files are installed into `/home/container/server-files`.
+- Server files are installed into `/home/container/` (your main server folder).
 - `ServerDescription.json` will be generated and patched automatically on first boot.
 
 ## License
